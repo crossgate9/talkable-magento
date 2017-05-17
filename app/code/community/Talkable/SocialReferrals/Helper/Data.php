@@ -20,6 +20,10 @@ class Talkable_SocialReferrals_Helper_Data extends Mage_Core_Helper_Abstract
         return $this->_getTextConfigValue("general/site_id");
     }
 
+    public function getAggregateCurrency() {
+        return $this->_getTextConfigValue('generate/aggregate_currency');
+    }
+
     //--------------------+
     // Talkable Campaigns |
     //--------------------+
@@ -62,6 +66,10 @@ class Talkable_SocialReferrals_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getPurchaseData($order)
     {
+        $_original_currency = $order->getData('order_currency_code');
+        $_target_currency = $this->getAggregateCurrency();
+        $_currency_conversion_required = ($_original_currency != $_target_currency);
+        
         $shippingInfo = array();
         $shippingAddress = $order->getShippingAddress();
 
@@ -85,10 +93,18 @@ class Talkable_SocialReferrals_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $subtotal = (float) $order->getSubtotal();
+        if ($_currency_conversion_required) {
+            $subtotal = Mage::helper('directory')->currencyConvert($subtotal, $_original_currency, $_target_currency);
+        }
+
         if ($order->getDiscountAmount() < 0) {
             // getDiscountAmount() returns negative number formatted as string, e.g. "-10.0000"
             // That's why we add it instead of subtracting.
-            $subtotal += (float) $order->getDiscountAmount();
+            $_discount = (float) $order->getDiscountAmount();
+            if ($_currency_conversion_required) {
+                $_discount = Mage::helper('directory')->currencyConvert($_discount, $_original_currency, $_target_currency);
+            }
+            $subtotal += $_discount;
         }
 
         $retval = array(
@@ -108,9 +124,14 @@ class Talkable_SocialReferrals_Helper_Data extends Mage_Core_Helper_Abstract
         );
 
         foreach ($order->getAllVisibleItems() as $product) {
+            $_price = $product->getPrice();
+            if ($_currency_conversion_required) {
+                $_price = Mage::helper('directory')->currencyConvert($_price, $_original_currency, $_target_currency);
+            }
+
             $retval["purchase"]["items"][] = array(
                 "product_id" => $product->getSku(),
-                "price"      => $this->_normalizeAmount($product->getPrice()),
+                "price"      => $this->_normalizeAmount($_price),
                 "quantity"   => strval(round($product->getQtyOrdered())),
                 "title"      => $product->getName(),
             );

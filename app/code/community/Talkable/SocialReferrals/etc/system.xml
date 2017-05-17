@@ -46,6 +46,18 @@
                             <show_in_store>1</show_in_store>
                         </site_id>
                     </fields>
+
+                    <fields>
+                        <aggregate_currency translate="label">
+                            <label>Aggregate Currency</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </aggregate_currency>
+                    </fields>
                 </general>
 
                 <campaigns translate="label">

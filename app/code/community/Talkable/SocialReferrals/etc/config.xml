@@ -80,6 +80,7 @@
         <socialreferrals>
             <general>
                 <site_id></site_id>
+                <aggregate_currency>EUR</aggregate_currency>
             </general>
 
             <campaigns>
