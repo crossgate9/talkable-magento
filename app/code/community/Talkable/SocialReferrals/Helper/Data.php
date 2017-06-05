@@ -21,7 +21,7 @@ class Talkable_SocialReferrals_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     public function getAggregateCurrency() {
-        return $this->_getTextConfigValue('generate/aggregate_currency');
+        return $this->_getTextConfigValue('general/aggregate_currency');
     }
 
     //--------------------+
@@ -69,7 +69,7 @@ class Talkable_SocialReferrals_Helper_Data extends Mage_Core_Helper_Abstract
         $_original_currency = $order->getData('order_currency_code');
         $_target_currency = $this->getAggregateCurrency();
         $_currency_conversion_required = ($_original_currency != $_target_currency);
-        
+
         $shippingInfo = array();
         $shippingAddress = $order->getShippingAddress();
 
